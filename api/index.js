@@ -1,6 +1,6 @@
 const express = require("express");
 
-const sat = require("./components/sat/network");
+const sat = require("./components/sat/sat.network");
 
 const app = express();
 

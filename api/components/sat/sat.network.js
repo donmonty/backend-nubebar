@@ -1,18 +1,14 @@
 const express = require("express");
 const response = require("../../../network/response");
 const axios = require("axios");
-//const got = require("got");
-//const jsdom = require("jsdom");
-
-const satURL =
-  "http://siat.sat.gob.mx/app/qr/faces/pages/mobile/validadorqr.jsf?D1=4&D2=1&D3=Nn1664975253";
+const puppeteer = require("puppeteer");
 
 const router = express.Router();
 
 // Routes
 router.get("/", list);
-router.get("/bottle", fetch);
-router.get("/:id", get);
+//router.get("/bottle", fetch);
+router.get("/:id", getBottleId);
 
 // Helper functions
 async function fetchBottleId(encodedString) {
@@ -30,42 +26,7 @@ async function fetchBottleId(encodedString) {
   }
 }
 
-/////////////////////////////////////////
-async function crawlPage() {
-  const { JSDOM } = jsdom;
-  const url =
-    "http://siat.sat.gob.mx/app/qr/faces/pages/mobile/validadorqr.jsf?D1=4&D2=1&D3=Nn1664975253";
-
-  try {
-    const response = await got(url);
-    console.log("Request body:", response.body);
-    const dom = new JSDOM(response.body);
-
-    //function hasId
-
-    const nodeList = [...dom.window.document.querySelectorAll("table")];
-    console.log("Node list:", nodeList);
-    return nodeList;
-  } catch (err) {
-    console.log("Error en el crawler", err);
-  }
-}
-
 // Internal functions
-
-// async function lista(req, res, next) {
-//   const url = "https://jsonplaceholder.typicode.com/posts/";
-
-//   try {
-//     const data = await axios.get(url);
-//     console.log("Post list: ", data.data);
-//     response.success(req, res, data, 200);
-//     return data.data;
-//   } catch (err) {
-//     console.log("Error en posts:", err);
-//     response.error(req, res, err);
-//   }
-// }
 
 ///////////////////////////////
 function list(req, res, next) {
@@ -96,17 +57,35 @@ function get(req, res, next) {
 }
 
 ////////////////////////////////
-function fetch(req, res, next) {
-  console.log("Entering crawlPage...");
-  crawlPage()
-    .then((nodeList) => {
-      res.send("Nodelist parsed successfully!");
-      console.log("Node list:", nodeList);
+function getBottleId(req, res, next) {
+  const id = req.params.id;
+  scrapeBottleId(id)
+    .then(bottleId => {
+      response.success(req, res, bottleId, 200);
+      console.log("Bottle ID:", bottleId);
     })
     .catch((err) => {
-      console.log("Error", err);
+      console.log("getBottleId Error", err);
       response.error(req, res, err);
     });
+}
+
+/////////////////////////////////
+async function scrapeBottleId(id) {
+  const url = 'http://siat.sat.gob.mx/app/qr/faces/pages/mobile/validadorqr.jsf?D1=4&D2=1&D3=' + id;
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  const loadPage = await page.goto(url, { waitUntil: 'networkidle0' });
+  await page.content()
+  const data = await page.evaluate(
+    () =>  Array.from(document.querySelectorAll('td'))
+                .map(elem => elem.textContent)
+                .filter(text => (`${text[0]}${text[1]}` === 'Nn') || (`${text[0]}${text[1]}` === 'Ii'))
+  );
+  console.log(data[0]);
+  await browser.close();
+  const bottleId = {id: data[0]};
+  return bottleId;
 }
 
 module.exports = router;
