@@ -1,0 +1,154 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model almacen {
+  id          Int       @id @default(autoincrement())
+  nombre      String
+  numero      Int       @default(1)
+  sucursal_id Int?
+  sucursal    sucursal? @relation(fields: [sucursal_id], references: [id])
+  botella     botella[]
+  caja        caja[]
+}
+
+model botella {
+  id             Int       @id @default(autoincrement())
+  folio          String    @unique
+  producto_id    Int?
+  estado         String?
+  fecha_registro DateTime  @default(now())
+  fecha_baja     DateTime?
+  sucursal_id    Int?
+  almacen_id     Int?
+  peso_nueva     Int?
+  peso_cristal   Int?
+  peso_inicial   Int?
+  peso_actual    Int?
+  precio         Int?
+  nombre         String?
+  almacen        almacen?  @relation(fields: [almacen_id], references: [id])
+  producto       producto? @relation(fields: [producto_id], references: [id])
+  sucursal       sucursal? @relation(fields: [sucursal_id], references: [id])
+}
+
+model caja {
+  id         Int      @id @default(autoincrement())
+  numero     Int      @default(1)
+  nombre     String
+  almacen_id Int?
+  almacen    almacen? @relation(fields: [almacen_id], references: [id])
+  venta      venta[]
+}
+
+model categoria {
+  id          Int           @id @default(autoincrement())
+  nombre      String
+  ingrediente ingrediente[]
+}
+
+model cliente {
+  id           Int        @id @default(autoincrement())
+  nombre       String
+  razon_social String?
+  rfc          String?
+  direccion    String?
+  ciudad       String?
+  sucursal     sucursal[]
+}
+
+model consumo {
+  id             Int          @id @default(autoincrement())
+  ingrediente_id Int?
+  receta_id      Int?
+  venta_id       Int?
+  fecha          DateTime
+  volumen        Int
+  ingrediente    ingrediente? @relation(fields: [ingrediente_id], references: [id])
+  receta         receta?      @relation(fields: [receta_id], references: [id])
+  venta          venta?       @relation(fields: [venta_id], references: [id])
+}
+
+model ingrediente {
+  id                 Int                  @id @default(autoincrement())
+  codigo             String               @unique
+  nombre             String
+  categoria_id       Int?
+  densidad           Float?
+  categoria          categoria?           @relation(fields: [categoria_id], references: [id])
+  consumo            consumo[]
+  ingrediente_receta ingrediente_receta[]
+  producto           producto[]
+}
+
+model ingrediente_receta {
+  id             Int          @id @default(autoincrement())
+  receta_id      Int
+  ingrediente_id Int?
+  volumen        Int
+  ingrediente    ingrediente? @relation(fields: [ingrediente_id], references: [id])
+  receta         receta       @relation(fields: [receta_id], references: [id])
+
+  @@unique([receta_id, ingrediente_id], name: "ingrediente_receta_receta_id_ingrediente_id_key")
+}
+
+model producto {
+  id             Int          @id @default(autoincrement())
+  ingrediente_id Int?
+  nombre         String
+  capacidad      Int
+  codigo_barras  String
+  peso_nueva     Int?
+  peso_cristal   Int?
+  precio         Float?
+  ingrediente    ingrediente? @relation(fields: [ingrediente_id], references: [id])
+  botella        botella[]
+}
+
+model receta {
+  id                 Int                  @id @default(autoincrement())
+  codigo_pos         String
+  nombre             String
+  sucursal_id        Int?
+  sucursal           sucursal?            @relation(fields: [sucursal_id], references: [id])
+  consumo            consumo[]
+  ingrediente_receta ingrediente_receta[]
+  venta              venta[]
+}
+
+model sucursal {
+  id            Int       @id @default(autoincrement())
+  cliente_id    Int?
+  nombre        String
+  razon_social  String?
+  rfc           String?
+  direccion     String?
+  ciudad        String?
+  latitud       Float?
+  longitud      Float?
+  codigo_postal String?
+  cliente       cliente?  @relation(fields: [cliente_id], references: [id])
+  almacen       almacen[]
+  botella       botella[]
+  receta        receta[]
+  venta         venta[]
+}
+
+model venta {
+  id          Int       @id @default(autoincrement())
+  receta_id   Int?
+  sucursal_id Int?
+  fecha       DateTime
+  cantidad    Int
+  importe     Int
+  caja_id     Int?
+  caja        caja?     @relation(fields: [caja_id], references: [id])
+  receta      receta?   @relation(fields: [receta_id], references: [id])
+  sucursal    sucursal? @relation(fields: [sucursal_id], references: [id])
+  consumo     consumo[]
+}
