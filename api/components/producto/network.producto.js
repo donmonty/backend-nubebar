@@ -9,13 +9,22 @@ const controller = require('./controller.producto')
 const router = express.Router()
 
 // Routes
-router.get('/:codigoBarras', get)
+router.get('/:codigoBarras', get);
+router.post('/', post);
 
 //Internal functions
 function get(req, res, next) {
   controller.get(req.params.codigoBarras)
     .then(producto => {
       response.success(req, res, producto, 200)
+    })
+    .catch(next);
+}
+
+function post(req, res, next) {
+  controller.post(req.body)
+    .then(producto => {
+      response.success(req, res, producto, 201);
     })
     .catch(next);
 }
