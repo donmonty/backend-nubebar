@@ -1,5 +1,5 @@
 const TABLE = 'producto';
-const store = require('../../../store/prisma');
+const store = require('../../../store/prisma/producto');
 
 async function get(codigoBarras) {
   return store.get(TABLE);
