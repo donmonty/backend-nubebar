@@ -3,13 +3,27 @@ const { PrismaClient } = require("@prisma/client")
 
 const prisma = new PrismaClient()
 
-async function get(table, id) {
+async function getByBarcode(table, id) {
   if (table === 'producto') {
     const data = await prisma.producto.findFirst({
       where: { codigo_barras: id}
     })
     return data;
   }
+}
+
+async function get(table, id) {
+  const data = await prisma[table].findFirst({
+    where: {id: id}
+  })
+  return data
+}
+
+async function insert(table, payload) {
+  const data = await prisma[table].create({
+    data: payload
+  })
+  return data
 }
 
 async function post(body) {
@@ -41,12 +55,14 @@ async function post(body) {
       precio,
     }
   })
-
   return product;
 }
 
 
 module.exports = {
   get,
-  post
+  getByBarcode,
+  post,
+  insert,
+  prisma
 }

@@ -1,0 +1,6 @@
+netstat -ano | findstr :5432
+taskkill /PID 4708 /F
+docker exec -it backend-nubebar_pgDB_1 bash
+psql -U postgres
+DROP DATABASE IF EXISTS nubebartest;
+ps -p 4708
