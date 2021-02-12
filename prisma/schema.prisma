@@ -152,3 +152,21 @@ model venta {
   sucursal    sucursal? @relation(fields: [sucursal_id], references: [id])
   consumo     consumo[]
 }
+
+model auth {
+  id       Int     @id @default(autoincrement())
+  email    String  @unique
+  password String?
+}
+
+model pgmigrations {
+  id     Int      @id @default(autoincrement())
+  name   String
+  run_on DateTime
+}
+
+model usuario {
+  id    Int     @id @default(autoincrement())
+  email String  @unique
+  name  String?
+}

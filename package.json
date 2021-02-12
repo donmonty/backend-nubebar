@@ -6,16 +6,19 @@
   "scripts": {
     "dev": "node api/index.js",
     "seed": "node prisma/seed.js",
-    "test": "jest"
+    "test": "jest",
+    "migrate": "node-pg-migrate"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@prisma/client": "^2.15.0",
+    "@prisma/client": "^2.16.1",
     "axios": "^0.21.1",
     "express": "^4.17.1",
     "jest-environment-node": "^26.6.2",
+    "node-pg-migrate": "^5.9.0",
+    "pg": "^8.5.1",
     "puppeteer": "^5.5.0",
     "randomstring": "^1.1.5",
     "supertest": "^6.1.3"

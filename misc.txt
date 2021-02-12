@@ -4,3 +4,5 @@ docker exec -it backend-nubebar_pgDB_1 bash
 psql -U postgres
 DROP DATABASE IF EXISTS nubebartest;
 ps -p 4708
+
+DATABASE_URL=postgresql://postgres:password@localhost:5432/nubebartest npm run migrate up
