@@ -144,6 +144,20 @@ async function generateSQL() {
     nombre VARCHAR(255)
   );
 
+  CREATE TABLE "${schema}"."usuario"
+  (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(40) NOT NULL UNIQUE,
+    name VARCHAR(255)
+  );
+
+  CREATE TABLE "${schema}"."auth"
+  (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(40) NOT NULL UNIQUE, 
+    password VARCHAR(255)
+  );
+
   `
   return sql
     .split('\n')

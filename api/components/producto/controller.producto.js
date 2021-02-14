@@ -2,12 +2,17 @@ const TABLE = 'producto';
 const store = require('../../../store/prisma');
 
 async function getByBarcode(codigoBarras) {
-  return store.get(TABLE);
+  return store.get(TABLE, codigoBarras);
 }
 
 async function get(id) {
   const product = await store.get(TABLE, id)
   return product 
+}
+
+async function query(query) {
+  const products = await store.query(TABLE, query);
+  return products;
 }
 
 // async function post(body) {
@@ -51,6 +56,6 @@ async function upsert(body) {
 module.exports = {
   get,
   getByBarcode,
-  //post,
+  query,
   upsert
 }

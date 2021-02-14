@@ -12,6 +12,39 @@ async function getByBarcode(table, id) {
   }
 }
 
+async function query(table, query) {
+
+  function isEmpty(obj) {
+    return Object.keys(obj).length === 0;
+  }
+
+  if (isEmpty(query)) {
+    return list(table);
+  }
+
+  function formatQuery(query) {
+    const parameters = {}
+    for(let key in query) {
+      if(isNaN(query[key])) {
+        parameters[key] = query[key];
+      } else {
+        parameters[key] = parseInt(query[key]);
+      }
+    }
+    return parameters;
+  }
+
+  const filters = formatQuery(query);
+  const queryObject = { where: {...filters}};
+  const data = await prisma[table].findFirst(queryObject)
+  return data;
+}
+
+async function list(table) {
+  const data = await prisma[table].findMany()
+  return data;
+}
+
 async function get(table, id) {
   const data = await prisma[table].findFirst({
     where: {id: id}
@@ -24,6 +57,22 @@ async function insert(table, payload) {
     data: payload
   })
   return data
+}
+
+async function update(table, payload) {
+  const data = await prisma[table].update({
+    where: {id: payload.id},
+    data: payload
+  })
+  return data;
+}
+
+async function upsert(table, payload) {
+  if (payload.id) {
+    return await update(table, payload);
+  } else {
+    return await insert(table, payload);
+  }
 }
 
 async function post(body) {
@@ -62,7 +111,10 @@ async function post(body) {
 module.exports = {
   get,
   getByBarcode,
+  list,
   post,
   insert,
-  prisma
+  prisma,
+  query,
+  upsert,
 }

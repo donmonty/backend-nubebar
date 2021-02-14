@@ -10,14 +10,14 @@ const controller = require('./controller.producto')
 const router = express.Router()
 
 // Routes
-router.get('/:id', get)
+router.get('/', query)
 router.get('/:codigoBarras', getByBarcode);
 //router.post('/', post);
 router.post('/', upsert);
 
 //Internal functions
-function get(req, res, next) {
-  controller.get(req.params)
+function query(req, res, next) {
+  controller.query(req.query)
     .then(data => {
       response.success(req, res, data, 200)
     })
@@ -26,7 +26,7 @@ function get(req, res, next) {
 
 
 function getByBarcode(req, res, next) {
-  controller.get(req.params.codigoBarras)
+  controller.getByBarcode(req.params.codigoBarras)
     .then(producto => {
       response.success(req, res, producto, 200)
     })
