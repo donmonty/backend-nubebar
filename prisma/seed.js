@@ -158,6 +158,14 @@ async function generateSQL() {
     password VARCHAR(255)
   );
 
+  CREATE TABLE "${schema}"."sucursal_usuario"
+  (
+    id SERIAL PRIMARY KEY,
+    usuario_id INTEGER REFERENCES usuario(id) ON DELETE CASCADE,
+    sucursal_id INTEGER REFERENCES sucursal(id) ON DELETE CASCADE,
+    UNIQUE(usuario_id, sucursal_id)
+  );
+
   `
   return sql
     .split('\n')
