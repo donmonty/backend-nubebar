@@ -6,3 +6,13 @@ DROP DATABASE IF EXISTS nubebartest;
 ps -p 4708
 
 DATABASE_URL=postgresql://postgres:password@localhost:5432/nubebartest npm run migrate up
+
+
+HOW TO CREATE AND APPLY A DB MIGRATION
+------------------------------------------
+- Open terminal and run "npm run migrate create <migration name>"
+- Open the created migration file
+- Write the UP and DOWN migrations using pgm.sql(`<migration>`)
+- Apply the migration by executing "npm run migrate up" prefixed with the DB connection string.
+- Update the Prisma schema by running "npx prisma introspect"
+- Update the Prisma client by running "npx prisma generate"

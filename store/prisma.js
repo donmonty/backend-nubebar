@@ -3,6 +3,14 @@ const { PrismaClient } = require("@prisma/client")
 
 const prisma = new PrismaClient()
 
+// Experimental function only
+async function getLocationsByEmail(table, userId) {
+  const data = await prisma[table].findMany({
+    where: {id: userId}
+  });
+  return data;
+}
+
 async function getByBarcode(table, id) {
   if (table === 'producto') {
     const data = await prisma.producto.findFirst({
@@ -36,7 +44,7 @@ async function query(table, query) {
 
   const filters = formatQuery(query);
   const queryObject = { where: {...filters}};
-  const data = await prisma[table].findFirst(queryObject)
+  const data = await prisma[table].findMany(queryObject)
   return data;
 }
 
@@ -71,7 +79,7 @@ async function upsert(table, payload) {
   if (payload.id) {
     return await update(table, payload);
   } else {
-    return await insert(table, payload);
+    return insert(table, payload);
   }
 }
 
@@ -117,4 +125,5 @@ module.exports = {
   prisma,
   query,
   upsert,
+  getLocationsByEmail
 }
