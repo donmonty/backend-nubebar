@@ -16,3 +16,33 @@ HOW TO CREATE AND APPLY A DB MIGRATION
 - Apply the migration by executing "npm run migrate up" prefixed with the DB connection string.
 - Update the Prisma schema by running "npx prisma introspect"
 - Update the Prisma client by running "npx prisma generate"
+
+HOW TO CONNECT TO POSTGRES DB USING THE TERMINAL
+--------------------------------------------------
+- Open terminal
+- Access the postgres container CLI by running "docker exec -it backend-nubebar_pgDB_1 bash"
+- Connect to postgres with "psql -U postgres"
+- Connect to the database by running "\c nubebartest"
+- Enter the SQL code
+- Run "exit" to exit the database. Run it again to exit the CLI
+
+INSERT DATA INTO THE DB
+-------------------------
+INSERT INTO
+  cliente(nombre)
+VALUES
+  ('Hyrule Corporation');
+
+INSERT INTO
+  sucursal(nombre, cliente_id)
+VALUES
+  ('Link Burgers', 1),
+  ('Zelda Bar', 1);
+
+INSERT INTO
+  sucursal_usuario(usuario_id, sucursal_id)
+VALUES
+  (1, 1),
+  (1, 2),
+  (2, 1),
+  (2, 2);
