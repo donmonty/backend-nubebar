@@ -1,7 +1,7 @@
 const { PrismaClient } = require("@prisma/client");
 const server = require('../api/server');
 const axios = require('axios');
-const store = require('../store/prisma');
+const { create } = require('apisauce');
 
 const prisma = new PrismaClient();
 
@@ -94,19 +94,13 @@ test('A user location is retrieved successfully', async () => {
       sucursal_id: location3.id
     }
   })
-  const userLocation = await axios.get(url, {
-    params: {
-      id: internalConfig.dummyUser.id 
-    }
-  })
-  const all = await store.query('sucursal_usuario', {usuario_id: internalConfig.dummyUser.id});
-  // const all = await prisma.sucursal_usuario.findMany({
-  //   where: {usuario_id: 1}
-  // });
-  console.log('REAL LOCATIONS', all);
-  console.log('RETRIEVED USER LOCATION:', userLocation.data)
-  expect(userLocation.status).toEqual(200);
-  expect(userLocation.data.error).toBeFalsy();
+  
+  const api = create({baseURL: 'http://localhost:8080/api'});
+  const allLocations = await api.get('/sucursal-usuario', {usuario_id: 1})
+
+  console.log('LOCATIONS USING API SAUCE', allLocations.data);
+  expect(allLocations.status).toEqual(200);
+  expect(allLocations.data.error).toBeFalsy();
 })
 
 // test('A user location is added successfully', async () => {
