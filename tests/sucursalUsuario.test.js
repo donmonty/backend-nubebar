@@ -1,7 +1,7 @@
 const { PrismaClient } = require("@prisma/client");
 const server = require('../api/server');
 const axios = require('axios');
-const { create } = require('apisauce');
+// const { create } = require('apisauce');
 
 const prisma = new PrismaClient();
 
@@ -68,14 +68,14 @@ test('A user location is created successfully', async () => {
     usuario_id: internalConfig.dummyUser.id,
     sucursal_id: internalConfig.location.id
   });
-  console.log('CREATED USER LOCATION:', userLocation.data)
+  // console.log('CREATED USER LOCATION:', userLocation.data)
   expect(userLocation.status).toEqual(201);
   expect(userLocation.data.error).toBeFalsy();
 })
 
 test('All user locations are retrieved successfully', async () => {
   const userLocations = await axios.get(url);
-  console.log('USER LOCATIONS:', userLocations.data)
+  // console.log('USER LOCATIONS:', userLocations.data)
   expect(userLocations.status).toEqual(200);
   expect(userLocations.data.error).toBeFalsy();
 })
@@ -94,30 +94,13 @@ test('A user location is retrieved successfully', async () => {
       sucursal_id: location3.id
     }
   })
-  
-  const api = create({baseURL: 'http://localhost:8080/api'});
-  const allLocations = await api.get('/sucursal-usuario', {usuario_id: 1})
+  const allLocations = await axios.get(url, {params: {usuario_id: internalConfig.dummyUser.id}});
+  // const api = create({baseURL: 'http://localhost:8080/api'});
+  // const allLocations = await api.get('/sucursal-usuario', {usuario_id: 1})
 
-  console.log('LOCATIONS USING API SAUCE', allLocations.data);
+  // console.log('LOCATIONS USING AXIOS', allLocations.data);
   expect(allLocations.status).toEqual(200);
   expect(allLocations.data.error).toBeFalsy();
 })
 
-// test('A user location is added successfully', async () => {
 
-//   // expect(ingredientJWBlack.codigo).toEqual('WHIS001')  
-
-//   // Send payload to endpoint
-//   const userLocation = await request(server)
-//     .post('/api/sucursalusuario')
-//     .send({
-//       sucursal_id: internalConfig.location.id,
-//       usuario_id: internalConfig.dummyUser.id
-//     })
-//     .set('Accept', 'application/json')
-//     .expect('Content-Type', /json/)
-//     .expect(201)
-//   console.log('User Locations', userLocation.body);
-//   expect(userLocation.error).toBeFalsy();
-
-// })
