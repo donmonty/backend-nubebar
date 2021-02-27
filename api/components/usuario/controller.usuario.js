@@ -3,12 +3,18 @@ const store = require('../../../store/prisma')
 
 const TABLE = 'usuario';
 
+async function getLocations(id) {
+  const models = ['sucursal_usuario', 'sucursal'];
+  const data = store.getRelatedExplicit(TABLE, models, +id);
+  return data;
+}
+
 async function list() {
   return store.list(TABLE);
 }
 
 async function get(id) {
-  return store.get(TABLE, id);
+  return store.get(TABLE, +id);
 }
 
 async function query(query) {
@@ -39,4 +45,5 @@ module.exports = {
   get,
   query,
   upsert,
+  getLocations
 }

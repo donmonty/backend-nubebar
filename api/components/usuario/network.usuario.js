@@ -8,13 +8,22 @@ const controller = require('./controller.usuario');
 const router = express.Router();
 
 // Routes
-router.get('/', query);
 //router.get('/', list);
 router.get('/:id', get);
+router.get('/', query);
 router.post('/', upsert);
 router.put('/', upsert);
+router.get('/locations/:id', getLocations)
 
 // Internal functions
+function getLocations(req, res, next) {
+  controller.getLocations(req.params.id)
+    .then(locations => {
+      response.success(req, res, locations, 200);
+    })
+    .catch(next);
+}
+
 function query(req, res, next) {
   controller.query(req.query)
     .then(users => {

@@ -4,6 +4,59 @@ const { PrismaClient } = require("@prisma/client")
 const prisma = new PrismaClient()
 
 // Experimental function only
+async function getRelated(table, related, id) {
+  const data = await prisma[table].findUnique({
+    where: {id: id},
+    include: {[related]:true}
+  });
+  return data[related];
+}
+
+async function getRelatedExplicit(table, models, id) {
+  let query;
+  let lastObj;
+  let obj;
+
+  // This loop builds the nested include filters for our query
+  for (let i = (models.length - 1); i >= 0; i--) {
+    
+    if (i === (models.length - 1)) {
+      // Check if it's the last item in the array
+      lastObj = `{ include: { ${models[i]}: true } }`;
+      query = lastObj;
+    } else if(i === 0) {
+      // Check if it's the first item in the array
+      obj = { [models[i]]: query };
+      query = obj;
+    } else {
+      // All other items in the array
+      obj = { include: { [models[i]]: query } };
+      query = obj;
+    }
+  }
+  // Fetch the model including the nested related items
+  const response = await prisma[table].findUnique({
+    where: {id: id},
+    include: query
+  });
+  // Select the related items
+  const relatedItems = response[models[0]]
+  
+  // Select the ids of the final related model we want to fetch
+  const items = relatedItems.map(item => {
+    return item[`${models[models.length - 1]}_id`];
+  })
+  
+  // Fetch the records we need from the final target model
+  const targetTable = `${models[models.length - 1]}`
+  const data = await prisma[targetTable].findMany({
+    where: {
+      id: { in: items }
+    }
+  })
+  return data;
+}
+
 async function getLocationsByEmail(table, userId) {
   const data = await prisma[table].findMany({
     where: {id: userId}
@@ -118,6 +171,7 @@ async function post(body) {
 
 module.exports = {
   get,
+  getRelated,
   getByBarcode,
   list,
   post,
@@ -125,5 +179,6 @@ module.exports = {
   prisma,
   query,
   upsert,
-  getLocationsByEmail
+  getLocationsByEmail,
+  getRelatedExplicit
 }
