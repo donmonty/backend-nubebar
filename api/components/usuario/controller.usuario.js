@@ -3,9 +3,10 @@ const store = require('../../../store/prisma')
 
 const TABLE = 'usuario';
 
-async function getLocations(id) {
+async function getLocations(query) {
   const models = ['sucursal_usuario', 'sucursal'];
-  const data = store.getRelatedExplicit(TABLE, models, +id);
+  const data = store.getRelatedExplicit(TABLE, models, +query.id);
+  
   return data;
 }
 

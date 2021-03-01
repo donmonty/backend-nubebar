@@ -20,6 +20,8 @@ HOW TO CREATE AND APPLY A DB MIGRATION
 HOW TO CONNECT TO POSTGRES DB USING THE TERMINAL
 --------------------------------------------------
 - Open terminal
+- Enter "docker container ls" and check if the postgres container is running
+- Fi not, enter "docker-compose up -d to start the postgres container"
 - Access the postgres container CLI by running "docker exec -it backend-nubebar_pgDB_1 bash"
 - Connect to postgres with "psql -U postgres"
 - Connect to the database by running "\c nubebartest"
@@ -46,3 +48,9 @@ VALUES
   (1, 2),
   (2, 1),
   (2, 2);
+
+INSERT INTO
+  almacen(nombre, numero, sucursal_id)
+VALUES
+  ('Barra Principal', 1, 1),
+  ('Barra Principal', 1, 2);

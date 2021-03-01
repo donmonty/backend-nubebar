@@ -9,15 +9,18 @@ const router = express.Router();
 
 // Routes
 //router.get('/', list);
+router.get('/locations', getLocations);
 router.get('/:id', get);
 router.get('/', query);
 router.post('/', upsert);
 router.put('/', upsert);
-router.get('/locations/:id', getLocations)
+// router.get('/locations/:id', getLocations)
+
 
 // Internal functions
 function getLocations(req, res, next) {
-  controller.getLocations(req.params.id)
+  controller.getLocations(req.query)
+  // controller.getLocations(req.params.id)
     .then(locations => {
       response.success(req, res, locations, 200);
     })

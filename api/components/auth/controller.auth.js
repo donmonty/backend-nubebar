@@ -5,7 +5,7 @@ const auth = require('../../../auth');
 const TABLE = 'auth';
 
 async function login(email, password) {
-  const data = await store.query(TABLE, {email: email});
+  const data = await store.getUserByEmail(TABLE, email);
   const checkPassword = await bcrypt.compare(password, data.password)
   if (checkPassword === true) return auth.sign({ ...data });
 

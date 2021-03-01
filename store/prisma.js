@@ -57,9 +57,9 @@ async function getRelatedExplicit(table, models, id) {
   return data;
 }
 
-async function getLocationsByEmail(table, userId) {
-  const data = await prisma[table].findMany({
-    where: {id: userId}
+async function getUserByEmail(table, email) {
+  const data = await prisma[table].findUnique({
+    where: {email: email}
   });
   return data;
 }
@@ -179,6 +179,6 @@ module.exports = {
   prisma,
   query,
   upsert,
-  getLocationsByEmail,
-  getRelatedExplicit
+  getRelatedExplicit,
+  getUserByEmail,
 }
