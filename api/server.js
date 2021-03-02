@@ -7,6 +7,7 @@ const auth = require('./components/auth/network.auth')
 const errors = require('../network/errors');
 const sucursalUsuario = require('./components/sucursalusuario/network.sucursalusuario');
 const storage = require('./components/storage/network.storage');
+const location = require('./components/location/network.location');
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use('/api/auth', auth);
 app.use("/api/sat", sat);
 app.use('/api/sucursal-usuario', sucursalUsuario);
 app.use('/api/storage', storage);
+app.use('/api/location', location);
 app.use("/", (req, res, next) => {
   res.send("Hello world, motherfuckers!");
 });
