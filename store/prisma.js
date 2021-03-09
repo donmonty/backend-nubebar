@@ -73,6 +73,7 @@ async function getByBarcode(table, id) {
   }
 }
 
+const stringNumbers = ['codigo_barras'];
 async function query(table, query) {
 
   function isEmpty(obj) {
@@ -86,7 +87,7 @@ async function query(table, query) {
   function formatQuery(query) {
     const parameters = {}
     for(let key in query) {
-      if(isNaN(query[key])) {
+      if(isNaN(query[key]) || stringNumbers.includes(key)) {
         parameters[key] = query[key];
       } else {
         parameters[key] = parseInt(query[key]);
