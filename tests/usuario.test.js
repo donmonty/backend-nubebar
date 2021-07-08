@@ -18,7 +18,7 @@ afterAll(async (done) => {
   done();
 })
 
-describe('Fetching locations assigned to a user', () => {
+describe('Fetch user locations', () => {
   beforeEach(async () => {
 
     // Seed database with necessary data

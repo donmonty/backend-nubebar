@@ -10,14 +10,28 @@ const router = express.Router();
 // Routes
 //router.get('/', list);
 router.get('/locations', getLocations);
+router.get('/locations/:id', getUserLocations)
 router.get('/:id', get);
 router.get('/', query);
 router.post('/', upsert);
 router.put('/', upsert);
-// router.get('/locations/:id', getLocations)
 
 
 // Internal functions
+
+async function getUserLocations(req, res, next) {
+  const { id } = req.params;
+  try {
+    const data = await controller.getUserLocations(parseInt(id));
+    const locations = data.sucursal_usuario;
+    const userLocations = locations.map(item => item.sucursal);
+    response.success(req, res, userLocations, 200);
+  } catch (error) {
+    next;
+  }
+}
+
+
 function getLocations(req, res, next) {
   controller.getLocations(req.query)
   // controller.getLocations(req.params.id)
