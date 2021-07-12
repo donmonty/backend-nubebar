@@ -17,6 +17,11 @@ async function getUserLocations(id) {
   return user;
 }
 
+async function getUserById(id) {
+  const user = await prisma.usuario.findUnique({ where: { id: id } });
+  return user;
+}
+
 async function getLocations(query) {
   const models = ['sucursal_usuario', 'sucursal'];
   const data = store.getRelatedExplicit(TABLE, models, +query.id);
@@ -61,5 +66,6 @@ module.exports = {
   query,
   upsert,
   getLocations,
-  getUserLocations
+  getUserLocations,
+  getUserById
 }

@@ -11,7 +11,8 @@ const router = express.Router();
 //router.get('/', list);
 router.get('/locations', getLocations);
 router.get('/locations/:id', getUserLocations)
-router.get('/:id', get);
+router.get('/:id', getUserById);
+//router.get('/:id', get);
 router.get('/', query);
 router.post('/', upsert);
 router.put('/', upsert);
@@ -26,6 +27,17 @@ async function getUserLocations(req, res, next) {
     const locations = data.sucursal_usuario;
     const userLocations = locations.map(item => item.sucursal);
     response.success(req, res, userLocations, 200);
+  } catch (error) {
+    next;
+  }
+}
+
+async function getUserById(req, res, next) {
+  const { id } = req.params;
+  try {
+    const user = await controller.getUserById(parseInt(id));
+    if (!user) return response.success(req, res, { message: "User not found." }, 400);
+    response.success(req, res, user, 200);
   } catch (error) {
     next;
   }
